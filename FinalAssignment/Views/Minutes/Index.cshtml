@@ -42,7 +42,7 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="minuteTableBody">
         @foreach (var item in Model)
         {
             var supervisors = item.Employees.Select(emp => emp.Name);
@@ -117,6 +117,9 @@
                         Type: $("#typeSearch").val(),
                         Month: $("#monthSearch").val(),
                         Year: $("#yearSearch").val()
+                    },
+                    success: (response) => {
+                        renderTableBody(response.data);
                     }
                 });
             });
@@ -131,5 +134,45 @@
             //    };
             //});
         });
+
+        const renderRow = row => {
+            return `
+                        <td>
+                            ${row.id}
+                        </td>
+                        <td>
+                            ${row.minType}
+                        </td>
+                        <td>
+                            ${row.date}
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            ${row.crew}
+                        </td>
+                        <td>
+                            ${row.topic}
+                        </td>
+                        <td>
+                            ${row.approvalStatus ? "Approved" : "Not Approved"}
+                        </td>
+                        <td>
+                            ${row.approvalHistory ? "Approved" : "Not Approved"}
+                        </td>
+                        <td>
+                            <a href="/Minutes/Edit/${row.id}">Edit</a> |
+                            <a href="/Minutes/Details/${row.id}">Details</a> |
+                            <a href="/Minutes/Delete/${row.id}">Delete</a>
+                        </td>`;
+        }
+
+        const renderTableBody = (data) => {
+            const minuteTableBody = document.querySelector("#minuteTableBody");
+            minuteTableBody.innerHTML = "";
+            data.forEach(row => {
+                minuteTableBody.insertAdjacentHTML("beforeend", renderRow(row));
+            })
+        }
     </script>
 }

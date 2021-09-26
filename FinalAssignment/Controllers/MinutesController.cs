@@ -1,6 +1,7 @@
 ﻿using FinalAssignment.DAL.Data.Models;
 using FinalAssignment.Services.InputModel;
 using FinalAssignment.Services.Services;
+using FinalAssignment.Services.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -58,7 +59,49 @@ namespace FinalAssignment.Controllers
 
         public async Task<IActionResult> Search([Bind("Crew,Supervisor,Type,Month,Year")] SearchModel filters)
         {
-            return NotFound();
+            var result = await _context.GetAllMinutes();
+            if (filters.Year >= 1800)
+            {
+                result = result.Where(min => min.Date.Year == filters.Year);
+            }
+
+            if (filters.Crew != null)
+            {
+                result = result.Where(min => min.CrewID.ToString().Equals(filters.Crew));
+            }
+
+            if (filters.Month != Month.Months)
+            {
+                result = result.Where(min => (int)(min.Date.Month) == (int)(filters.Month));
+            }
+
+            if (filters.Type != MinuteType.Minute)
+            {
+                result = result.Where(min => min.MinuteType == filters.Type);
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            var data = result.Select(min => new MinuteViewModel
+            {
+                ID = min.ID,
+                Topic = min.Topic,
+                MinType = Enum.GetName(typeof(MinuteType), min.MinuteType),
+                Date = min.Date.ToString("dd/MM/yyyy"),
+                ApprovalStatus = min.ApprovalStatus,
+                ApprovalHistory = min.ApprovalHistory,
+                Crew = min.Crews.Name,
+                Supervisor = min.SupervisorID
+            });
+
+            return Ok(new
+            {
+                status = "Success",
+                data
+            });
         }
 
         // POST: Minutes/Create

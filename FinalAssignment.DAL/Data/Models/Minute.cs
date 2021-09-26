@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace FinalAssignment.DAL.Data.Models
 {
@@ -45,10 +46,12 @@ namespace FinalAssignment.DAL.Data.Models
 
         [ForeignKey(nameof(SupervisorID))]
         [InverseProperty("Minutes")]
+        [JsonIgnore]
         public virtual ICollection<Employee> Employees { set; get; }
 
         [ForeignKey(nameof(CrewID))]
         [InverseProperty("Minutes")]
+        [JsonIgnore]
         public virtual Crew Crews { set; get; }
     }
 
