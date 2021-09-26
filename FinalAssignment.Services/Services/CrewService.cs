@@ -70,9 +70,9 @@ namespace FinalAssignment.Services.Services
         {
             try
             {
-                var result = _context.GetByCondition(emp => emp.IsActive == true);
+                var result = _context.GetByCondition(crew => crew.IsActive == true);
 
-                return result.AsEnumerable();
+                return result;
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace FinalAssignment.Services.Services
         {
             try
             {
-                return _context.GetByCondition(emp => emp.IsActive == true && emp.ID == id).SingleOrDefault();
+                return _context.GetByCondition(crew => crew.IsActive == true && crew.ID == id).SingleOrDefault();
             }
             catch (Exception ex)
             {

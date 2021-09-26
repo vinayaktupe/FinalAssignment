@@ -1,0 +1,56 @@
+﻿@{
+    var endYear = 2021;
+    IEnumerable<Employee> supervisors = (IEnumerable<Employee>)ViewData["SupervisorID"];
+}
+<div class="row">
+    <div class="col-12">
+        <form id="searchForm">
+            <div class="row">
+                <div class="col-4 form-group">
+                    <label class="control-label" for="crewSearch">Crew</label>
+                    <select class="form-control" id="crewSearch" name="crewSearch" asp-items="ViewBag.CrewID">
+                    </select>
+                </div>
+                <div class="col-4 form-group">
+                    <label class="control-label" for="supervisorSearch">Supervisor</label>
+                    <input class="form-control" id="supervisorSearch" name="supervisorSearch" type="text" list="supervisorListSearch" placeholder="Select Supervisor">
+                    <datalist id="supervisorListSearch">
+                        @{
+                            foreach (var supervisor in supervisors)
+                            {
+                                <option value="@supervisor.ID">@supervisor.Name</option>
+                            }
+                        }
+                    </datalist>
+                </div>
+                <div class="col-4 form-group">
+                    <label class="control-label" for="typeSearch">Type</label>
+                    <select class="form-control" id="typeSearch" name="typeSearch" asp-items="@Html.GetEnumSelectList<MinuteType>()">
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4 form-group">
+                    <label class="control-label" for="monthSearch">Month</label>
+                    <select class="form-control" id="monthSearch" name="monthSearch" asp-items="@Html.GetEnumSelectList<Month>()">
+                    </select>
+                </div>
+                <div class="col-4 form-group">
+                    <label class="control-label" for="yearSearch">Year</label>
+                    <input class="form-control" id="yearSearch" name="yearSearch" type="text" list="yearSearchList" placeholder="Select Year">
+                    <datalist id="yearSearchList">
+                        @{
+                            for (int i = endYear; i >= 1800; --i)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+                    </datalist>
+                </div>
+                <div class="col-4 form-group align-self-end">
+                    <button type="button" id="searchBtn" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

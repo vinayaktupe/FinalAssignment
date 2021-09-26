@@ -1,0 +1,99 @@
+﻿@model Minute
+
+@{
+    ViewData["Title"] = "Create";
+    IEnumerable<Employee> supervisors = (IEnumerable<Employee>)ViewData["SupervisorID"];
+    var token = Html.AntiForgeryToken();
+}
+
+<h1>Create</h1>
+
+<h4>Minute</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" id="MinuteForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @token
+            <div class="form-group">
+                <label asp-for="MinuteType" class="control-label"></label>
+                <select asp-for="MinuteType" class="form-control" asp-items="@Html.GetEnumSelectList<MinuteType>()"></select>
+                <span asp-validation-for="MinuteType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupervisorID" class="control-label"></label>
+                <input class="form-control" id="SupervisorID" name="SupervisorID" type="text" list="SupervisorIDList" placeholder="Select Supervisor">
+                <datalist id="SupervisorIDList">
+                    @{
+                        foreach (var supervisor in supervisors)
+                        {
+                            <option value="@supervisor.ID">@supervisor.Name</option>
+                        }
+                    }
+                </datalist>
+            </div>
+            <div class="form-group">
+                <label asp-for="Topic" class="control-label"></label>
+                <input asp-for="Topic" class="form-control" />
+                <span asp-validation-for="Topic" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CrewID" class="control-label"></label>
+                <select asp-for="CrewID" class="form-control" asp-items="ViewBag.CrewID"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var supervisorList = "";
+        $(document).ready(() => {
+            $("#MinuteForm").submit(evt => {
+                evt.preventDefault();
+                if (document.querySelector("#MinuteForm").checkValidity()) {
+                    $.ajax({
+                        url: "/Minutes/Create",
+                        method: "POST",
+                        data: {
+                            ID: 0,
+                            MinuteType: $("#MinuteType").val(),
+                            SupervisorID: supervisorList,
+                            Topic: $("#Topic").val(),
+                            Date: $("#Date").val(),
+                            CrewID: $("#CrewID").val(),
+                            __RequestVerificationToken: $("input[name=__RequestVerificationToken]").val()
+                        },
+                        dataType: 'json',
+                        success: () => {
+                            window.location.href = "/Minutes/Index";
+                        },
+                        error: (error) => {
+                            console.log(error);
+                        }
+                    });
+                }
+            });
+
+            $("#SupervisorID").on("blur change", (evt) => {
+                if (evt.target.value != "") {
+                    supervisorList += `${evt.target.value},`
+                    evt.target.value = "";
+                }
+            });
+        });
+    </script>
+}

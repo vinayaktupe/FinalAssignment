@@ -32,6 +32,7 @@ namespace FinalAssignment
 
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<ICrewService, CrewService>();
+            services.AddScoped<IMinuteService, MinuteService>();
 
             services.AddDefaultIdentity<IdentityUser>(options =>
             {

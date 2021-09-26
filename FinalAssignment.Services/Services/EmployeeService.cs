@@ -12,6 +12,7 @@ namespace FinalAssignment.Services.Services
     {
         public Task<IEnumerable<Employee>> GetAllEmployees();
         public Task<Employee> GetEmployeeByID(int id);
+        public Task<IEnumerable<Employee>> GetEmployeeByType(EmployeeType employeeType);
         public Task<bool> CreateEmployee(Employee employee);
         public Task<bool> UpdateEmployee(Employee employee);
         public Task<bool> DeleteEmployee(int id);
@@ -85,6 +86,19 @@ namespace FinalAssignment.Services.Services
             try
             {
                 return _context.GetByCondition(emp => emp.IsActive == true && emp.ID == id).SingleOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.Source} - {ex.Message}");
+            }
+            return null;
+        }
+
+        public async Task<IEnumerable<Employee>> GetEmployeeByType(EmployeeType employeeType)
+        {
+            try
+            {
+                return _context.GetByCondition(emp => emp.IsActive == true && emp.EmployeeType == employeeType);
             }
             catch (Exception ex)
             {

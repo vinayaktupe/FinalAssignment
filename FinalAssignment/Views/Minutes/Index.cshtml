@@ -1,0 +1,135 @@
+﻿@model IEnumerable<FinalAssignment.DAL.Data.Models.Minute>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css" />
+
+<h1>Index</h1>
+<partial name="_SearchBar" />
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table id="minutesTable" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MinuteType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupervisorID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Crews)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Topic)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApprovalStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApprovalHistory)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var supervisors = item.Employees.Select(emp => emp.Name);
+            var sb = "";
+            foreach (var supervisor in supervisors)
+            {
+                sb += $"{supervisor} ";
+            }
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MinuteType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @sb
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Crews.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Topic)
+                </td>
+                @if (item.ApprovalStatus)
+                {
+                    <td>Approved</td>
+                }
+                else
+                {
+                    <td>Not Approved</td>
+                }
+                @if (item.ApprovalHistory)
+                {
+                    <td>Approved</td>
+                }
+                else
+                {
+                    <td>Not Approved</td>
+
+                }
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#minutesTable').DataTable();
+
+
+            $("#searchBtn").click(evt => {
+                $.ajax({
+                    url: "/Minutes/Search",
+                    method: "GET",
+                    data: {
+                        Crew: $("#crewSearch").val(),
+                        Supervisor: $("#supervisorSearch").val(),
+                        Type: $("#typeSearch").val(),
+                        Month: $("#monthSearch").val(),
+                        Year: $("#yearSearch").val()
+                    }
+                });
+            });
+
+            //$("#searchForm").click(evt => {
+            //    var filters = {
+            //        Crew: $("#crewSearch").val(),
+            //        Supervisor: $("#supervisorSearch").val(),
+            //        Type: $("#typeSearch").val(),
+            //        Month: $("#monthSearch").val(),
+            //        Year: $("#yearSearch").val()
+            //    };
+            //});
+        });
+    </script>
+}
