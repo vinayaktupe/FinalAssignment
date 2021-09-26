@@ -31,6 +31,7 @@ namespace FinalAssignment
                                 Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<ICrewService, CrewService>();
 
             services.AddDefaultIdentity<IdentityUser>(options =>
             {
