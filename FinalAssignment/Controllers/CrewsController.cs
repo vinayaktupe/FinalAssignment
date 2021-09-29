@@ -22,7 +22,7 @@ namespace FinalAssignment.Controllers
         // GET: Crews
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Crews.ToListAsync());
+            return View(await _context.Crews.OrderBy(crew=>crew.ID).ToListAsync());
         }
 
         // GET: Crews/Details/5

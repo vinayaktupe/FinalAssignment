@@ -70,7 +70,7 @@ namespace FinalAssignment.Services.Services
         {
             try
             {
-                var result = _context.GetByCondition(emp => emp.IsActive == true);
+                var result = _context.GetByCondition(emp => emp.IsActive == true).OrderByDescending(emp => emp.ID);
 
                 return result.AsEnumerable();
             }

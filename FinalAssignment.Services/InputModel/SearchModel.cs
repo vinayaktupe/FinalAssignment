@@ -14,6 +14,8 @@ namespace FinalAssignment.Services.InputModel
         public MinuteType Type { get; set; }
         public Month Month { get; set; }
         public int Year { get; set; }
+        public int ResultsPerPage { get; set; }
+        public int PageNumber { get; set; }
 
     }
 }

@@ -97,31 +97,55 @@
         }
     </tbody>
 </table>
+<div class="row">
+    <div class="col-4">
+        <button class="btn btn-secondary" type="button" id="previous">Previous</button>
+        <button class="btn btn-secondary" type="button" id="next">Next</button>
+    </div>
+</div>
 
 @section Scripts{
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
 
     <script>
-        $(document).ready(function () {
-            $('#minutesTable').DataTable();
+        var pageNumber = 0;
+        var resultsPerPage = 0;
 
+        $(document).ready(function () {
+            $('#minutesTable').DataTable({
+                "lengthMenu": [1, 2, 3, 4, 5, 10, 15, 20],
+                "bPaginate": false,
+                "order": [],
+            });
+
+            $("#previous").click(evt => {
+                pageNumber = $("#pageNumber").val() * 1;
+                resultsPerPage = $("#resultsPerPage").val() * 1;
+
+                pageNumber = pageNumber >= 1 ? 1 : pageNumber - 1;
+
+                $("#pageNumber").val(pageNumber);
+
+                makeSearch();
+            });
+
+            $("#next").click(evt => {
+                pageNumber = $("#pageNumber").val() * 1;
+                resultsPerPage = $("#resultsPerPage").val();
+
+                pageNumber += 1;
+
+                $("#pageNumber").val(pageNumber);
+
+                makeSearch();
+            });
 
             $("#searchBtn").click(evt => {
-                $.ajax({
-                    url: "/Minutes/Search",
-                    method: "GET",
-                    data: {
-                        Crew: $("#crewSearch").val(),
-                        Supervisor: $("#supervisorSearch").val(),
-                        Type: $("#typeSearch").val(),
-                        Month: $("#monthSearch").val(),
-                        Year: $("#yearSearch").val()
-                    },
-                    success: (response) => {
-                        renderTableBody(response.data);
-                    }
-                });
+                pageNumber = $("#pageNumber").val();
+                resultsPerPage = $("#resultsPerPage").val();
+
+                makeSearch();
             });
 
             //$("#searchForm").click(evt => {
@@ -135,36 +159,55 @@
             //});
         });
 
+        const makeSearch = () => {
+            $.ajax({
+                url: "/Minutes/Search",
+                method: "GET",
+                data: {
+                    Crew: $("#crewSearch").val(),
+                    Supervisor: $("#supervisorSearch").val(),
+                    Type: $("#typeSearch").val(),
+                    Month: $("#monthSearch").val(),
+                    Year: $("#yearSearch").val(),
+                    PageNumber: pageNumber,
+                    ResultsPerPage: resultsPerPage
+                },
+                success: (response) => {
+                    renderTableBody(response.data);
+                }
+            });
+        }
+
         const renderRow = row => {
             return `
-                        <td>
-                            ${row.id}
-                        </td>
-                        <td>
-                            ${row.minType}
-                        </td>
-                        <td>
-                            ${row.date}
-                        </td>
-                        <td>
-                        </td>
-                        <td>
-                            ${row.crew}
-                        </td>
-                        <td>
-                            ${row.topic}
-                        </td>
-                        <td>
-                            ${row.approvalStatus ? "Approved" : "Not Approved"}
-                        </td>
-                        <td>
-                            ${row.approvalHistory ? "Approved" : "Not Approved"}
-                        </td>
-                        <td>
-                            <a href="/Minutes/Edit/${row.id}">Edit</a> |
-                            <a href="/Minutes/Details/${row.id}">Details</a> |
-                            <a href="/Minutes/Delete/${row.id}">Delete</a>
-                        </td>`;
+                    <td>
+                        ${row.id}
+                    </td>
+                    <td>
+                        ${row.minType}
+                    </td>
+                    <td>
+                        ${row.date}
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        ${row.crew}
+                    </td>
+                    <td>
+                        ${row.topic}
+                    </td>
+                    <td>
+                        ${row.approvalStatus ? "Approved" : "Not Approved"}
+                    </td>
+                    <td>
+                        ${row.approvalHistory ? "Approved" : "Not Approved"}
+                    </td>
+                    <td>
+                        <a href="/Minutes/Edit/${row.id}">Edit</a> |
+                        <a href="/Minutes/Details/${row.id}">Details</a> |
+                        <a href="/Minutes/Delete/${row.id}">Delete</a>
+                    </td>`;
         }
 
         const renderTableBody = (data) => {

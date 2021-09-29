@@ -64,7 +64,9 @@ namespace FinalAssignment.Services.Services
 
                 minute.IsActive = false;
                 minute.UpdatedAt = DateTime.Now;
-                _context.Update(minute);
+                //_context.Update(minute);
+                new GenericRepository<Minute>().Update(minute);
+
 
                 return true;
             }
@@ -79,7 +81,7 @@ namespace FinalAssignment.Services.Services
         {
             try
             {
-                var result = _context.Include(min => min.Crews).Where(emp => emp.IsActive == true);
+                var result = _context.Include(min => min.Crews).Where(emp => emp.IsActive == true).OrderByDescending(min => min.ID);
 
                 return result.AsEnumerable();
             }
@@ -157,7 +159,8 @@ namespace FinalAssignment.Services.Services
             {
                 minute.UpdatedAt = DateTime.Now;
                 minute.IsActive = true;
-                _context.Update(minute);
+                //_context.Update(minute);
+                new GenericRepository<Minute>().Update(minute);
                 return true;
             }
             catch (Exception ex)

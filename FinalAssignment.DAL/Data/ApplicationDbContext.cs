@@ -44,7 +44,7 @@ namespace FinalAssignment.DAL.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=vinayakt\\SQLEXPRESS;Database=FinalAssignment;Trusted_Connection=True;MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer("Server=vinayakt\\SQLEXPRESS;Database=FinalAssignment;User Id=sa;Password=password@123;");
             base.OnConfiguring(optionsBuilder);
         }
     }

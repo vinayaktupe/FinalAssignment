@@ -4,7 +4,7 @@
 }
 <div class="row">
     <div class="col-12">
-        <form  id="searchForm">
+        <form id="searchForm">
             <div class="row">
                 <div class="col-4 form-group">
                     <label class="control-label" for="crewSearch">Crew</label>
@@ -47,6 +47,14 @@
                             }
                         }
                     </datalist>
+                </div>
+                <div class="col-4 form-group">
+                    <label class="control-label" for="resultsPerPage">Results Per Page</label>
+                    <input type="number" name="resultsPerPage" id="resultsPerPage" class="form-control" value="5" min="1"/>
+                </div>
+                <div class="col-4 form-group">
+                    <label class="control-label" for="pageNumber">Page Number</label>
+                    <input type="number" name="pageNumber" id="pageNumber" class="form-control" value="1" min="1"/>
                 </div>
                 <div class="col-4 form-group align-self-end">
                     <button type="button" id="searchBtn" class="btn btn-primary">Search</button>

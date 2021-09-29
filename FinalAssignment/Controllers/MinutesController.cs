@@ -33,6 +33,7 @@ namespace FinalAssignment.Controllers
             var supervisors = await _employeeService.GetEmployeeByType(EmployeeType.Supervisor);
             ViewData["SupervisorID"] = supervisors;
             var minutes = await _context.GetAllMinutes();
+            //await _context.GetSupervisorByMinute(8);
             return View(minutes.ToList());
         }
 
@@ -57,9 +58,16 @@ namespace FinalAssignment.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Search([Bind("Crew,Supervisor,Type,Month,Year")] SearchModel filters)
+        public async Task<IActionResult> Search([Bind("Crew,Supervisor,Type,Month,Year,PageNumber,ResultsPerPage")] SearchModel filters, IFormCollection formData)
         {
             var result = await _context.GetAllMinutes();
+            filters.PageNumber = filters.PageNumber == 0 ? 1 : filters.PageNumber;
+            filters.ResultsPerPage = filters.ResultsPerPage <= 0 ? 5 : filters.ResultsPerPage;
+
+            var skip = (filters.PageNumber - 1) * filters.ResultsPerPage;
+            filters.PageNumber = skip >= result.Count() ? 1 : filters.PageNumber;
+            skip = (filters.PageNumber - 1) * filters.ResultsPerPage;
+
             if (filters.Year >= 1800)
             {
                 result = result.Where(min => min.Date.Year == filters.Year);
@@ -80,12 +88,13 @@ namespace FinalAssignment.Controllers
                 result = result.Where(min => min.MinuteType == filters.Type);
             }
 
+
             if (result == null)
             {
                 return NotFound();
             }
 
-            var data = result.Select(min => new MinuteViewModel
+            var data = result.Skip(skip).Take(filters.ResultsPerPage).OrderByDescending(min => min.ID).Select(min => new MinuteViewModel
             {
                 ID = min.ID,
                 Topic = min.Topic,
