@@ -79,12 +79,12 @@
                         },
                         dataType: 'json',
                         success: () => {
-                            window.location.href = "/Minutes/Index";
                         },
                         error: (error) => {
                             console.log(error);
                         }
                     });
+                    window.location.href = "/Minutes/Index";
                 }
             });
 
