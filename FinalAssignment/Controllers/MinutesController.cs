@@ -33,7 +33,7 @@ namespace FinalAssignment.Controllers
             var supervisors = await _employeeService.GetEmployeeByType(EmployeeType.Supervisor);
             ViewData["SupervisorID"] = supervisors;
             var minutes = await _context.GetAllMinutes();
-            //await _context.GetSupervisorByMinute(8);
+            var res = await _context.GetSupervisorByMinute(8);
             return View(minutes.ToList());
         }
 
@@ -41,12 +41,37 @@ namespace FinalAssignment.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var minute = await _context.GetMinuteByID(id);
+
+            var employee = new List<Employee>();
+
+            minute.SupervisorID.ToList().ForEach(async el =>
+            {
+                var res = await _employeeService.GetEmployeeByID(el.SupervisorID);
+                if (res != null)
+                {
+                    employee.Add(res);
+                }
+            });
+
             if (minute == null)
             {
                 return NotFound();
             }
 
-            return View(minute);
+            var data = new MinuteViewModel()
+            {
+                ID = minute.ID,
+                MinuteType = minute.MinuteType,
+                ApprovalStatus = minute.ApprovalStatus,
+                ApprovalHistory = minute.ApprovalHistory,
+                Crews = minute.Crews,
+                Date = minute.Date.ToString("dd/mm/yyyy"),
+                Topic = minute.Topic,
+                Employee = employee
+            };
+
+
+            return View(data);
         }
 
         // GET: Minutes/Create
@@ -102,7 +127,7 @@ namespace FinalAssignment.Controllers
                 Date = min.Date.ToString("dd/MM/yyyy"),
                 ApprovalStatus = min.ApprovalStatus,
                 ApprovalHistory = min.ApprovalHistory,
-                Crew = min.Crews.Name,
+                Crews = min.Crews,
                 Supervisor = min.SupervisorID
             });
 

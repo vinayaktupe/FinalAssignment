@@ -63,7 +63,10 @@
                     @Html.DisplayFor(modelItem => item.Date)
                 </td>
                 @*<td>
-                    @sb
+                    @foreach (var supervisor in item.Employees)
+                    {
+                        Console.WriteLine(supervisor.Name);
+                    }
                 </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.Crews.Name)

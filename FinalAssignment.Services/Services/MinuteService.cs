@@ -81,7 +81,7 @@ namespace FinalAssignment.Services.Services
         {
             try
             {
-                var result = _context.Include(min => min.Crews).Where(emp => emp.IsActive == true).OrderByDescending(min => min.ID);
+                var result = _context.Include(min => min.Crews).Include(min => min.Employees).Include(min => min.SupervisorID).Where(emp => emp.IsActive == true).OrderByDescending(min => min.ID);
 
                 return result.AsEnumerable();
             }
@@ -114,7 +114,12 @@ namespace FinalAssignment.Services.Services
         {
             try
             {
-                return _context.Include(min => min.Crews).Where(emp => emp.IsActive == true && emp.ID == id).SingleOrDefault();
+                return _context
+                    .Include(min => min.Crews)
+                    .Include(min => min.SupervisorID)
+                    .Include(min => min.Employees)
+                    .Where(emp => emp.IsActive == true && emp.ID == id)
+                    .SingleOrDefault();
             }
             catch (Exception ex)
             {
@@ -127,10 +132,10 @@ namespace FinalAssignment.Services.Services
         {
             try
             {
-                using (var employee = new GenericRepository<Employee>())
+                using (var employee = new UserDbContext())
                 {
-                    var minute = await _context.FirstOrDefaultAsync(min => min.ID == id);
-                    var supervisor = from emp in employee.GetAll()
+                    var minute = await _context.Include(min => min.Employees).Include(min => min.SupervisorID).FirstOrDefaultAsync(min => min.ID == id);
+                    var supervisor = from emp in employee.Employees.ToList()
                                      join super in minute.SupervisorID
                                      on emp.ID equals super.SupervisorID
                                      select new Employee
@@ -142,6 +147,7 @@ namespace FinalAssignment.Services.Services
                                          EmployeeType = emp.EmployeeType,
                                          UpdatedAt = emp.UpdatedAt
                                      };
+
 
                     return supervisor;
                 }

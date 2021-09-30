@@ -8,21 +8,34 @@ namespace FinalAssignment.Services.ViewModel
 {
     public class MinuteViewModel
     {
+        [Display(Name ="Minute ID")]
         public int ID { get; set; }
-        public List<Employee> Employee { set; get; }
-        public List<Supervisor> Supervisor { set; get; }
 
+        [Display(Name = "Supervisors")]
+        public List<Employee> Employee { set; get; }
+
+        [Display(Name = "Supervisors")]
+        public ICollection<Supervisor> Supervisor { set; get; }
+
+        [Display(Name = "Minute Type")]
         public MinuteType MinuteType { set; get; }
+
+        [Display(Name = "Minute Type")]
         public string MinType { set; get; }
 
+        [Display(Name = "Minute Topic")]
         public string Topic { set; get; }
 
+        [Display(Name = "Minute Date")]
         public string Date { set; get; }
 
-        public string Crew { set; get; }
+        [Display(Name = "Minute Crew")]
+        public Crew Crews { set; get; }
 
+        [Display(Name = "Approval Status")]
         public bool ApprovalStatus { set; get; }
 
+        [Display(Name = "Approval History")]
         public bool ApprovalHistory { set; get; }
 
     }

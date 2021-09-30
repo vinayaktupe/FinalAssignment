@@ -12,7 +12,7 @@ namespace FinalAssignment.DAL.Data.Models
 
         public Minute()
         {
-            SupervisorID = new List<Supervisor>();
+            SupervisorID = new HashSet<Supervisor>();
             Employees = new HashSet<Employee>();
         }
 
@@ -20,7 +20,7 @@ namespace FinalAssignment.DAL.Data.Models
         public int ID { set; get; }
 
         [Required, Display(Name = "Supervisor")]
-        public List<Supervisor> SupervisorID { set; get; }
+        public ICollection<Supervisor> SupervisorID { set; get; }
 
         [Required(ErrorMessage = "Please Select Minute Type"), Display(Name = "Type")]
         public MinuteType MinuteType { set; get; }
